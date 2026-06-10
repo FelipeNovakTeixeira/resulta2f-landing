@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resulta — DRE em minutos a partir das suas NFs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #F7F7F5;
+      --white:  #FFFFFF;
+      --blue:   #142848;
+      --yellow: #F2C744;
+      --sub:    #444444;
+      --muted:  #888888;
+      --silver: #C0C0C0;
+      --brd:    rgba(0,0,0,0.10);
+      --brd-b:  rgba(255,255,255,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--blue); line-height: 1.6; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+    .btn { display: inline-block; padding: 12px 28px; border-radius: 4px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; text-decoration: none; cursor: pointer; border: none; transition: all .2s; letter-spacing: .3px; }
+    .btn-blue    { background: var(--blue); color: #FFF; }
+    .btn-blue:hover { background: #1a3460; }
+    .btn-outline { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
+    .btn-outline:hover { background: var(--blue); color: #FFF; }
+    .btn-white   { background: #FFF; color: var(--blue); font-weight: 700; }
+    .btn-white:hover { background: #eaeaea; }
+
+    .eyebrow { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 4px; color: var(--yellow); margin-bottom: 18px; display: block; }
+
+    /* ── NAV ──────────────────────────────────────────────── */
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(247,247,245,0.96); backdrop-filter: blur(14px); border-bottom: 1px solid var(--brd); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+    .nav-logo { display: flex; flex-direction: column; text-decoration: none; }
+    .nav-logo .lg-main { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 20px; letter-spacing: 2px; color: var(--blue); line-height: 1; }
+    .nav-logo .lg-sub  { font-family: 'Orbitron', sans-serif; font-weight: 400; font-size: 7px; letter-spacing: 3px; color: var(--muted); margin-top: 3px; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--sub); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--blue); }
+
+    /* ── HERO ─────────────────────────────────────────────── */
+    .hero { padding: 96px 0 80px; background: var(--bg); }
+    .hero-eyebrow { display: inline-flex; flex-direction: column; margin-bottom: 36px; }
+    .he-brand { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 16px; letter-spacing: 3px; color: var(--blue); line-height: 1; }
+    .he-sub   { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 7.5px; letter-spacing: 3px; color: var(--muted); margin-top: 5px; }
+    .hero h1 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 68px; line-height: 1.06; letter-spacing: -2.5px; color: var(--blue); max-width: 780px; margin-bottom: 28px; }
+    .hero h1 em { font-style: normal; color: var(--yellow); }
+    .hero p { font-size: 20px; color: var(--sub); max-width: 520px; line-height: 1.65; margin-bottom: 44px; }
+    .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .hero-note { font-size: 13px; color: var(--muted); margin-top: 18px; }
+
+    /* ── STATS ─── azul ────────────────────────────────────── */
+    .stats { background: var(--blue); padding: 64px 0; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); }
+    .stat-item { padding: 0 48px; border-right: 1px solid var(--brd-b); }
+    .stat-item:first-child { padding-left: 0; }
+    .stat-item:last-child  { border-right: none; }
+    .stat-val { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 52px; letter-spacing: -2px; color: var(--yellow); line-height: 1; margin-bottom: 10px; }
+    .stat-lbl { font-size: 12px; letter-spacing: .5px; color: rgba(255,255,255,.5); font-weight: 500; line-height: 1.4; max-width: 200px; }
+
+    /* ── SEÇÕES BASE ───────────────────────────────────────── */
+    .sec { padding: 88px 0; }
+    .sec.light { background: var(--bg); }
+    .sec.dark  { background: var(--blue); }
+    .sec.light h2 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 44px; line-height: 1.08; letter-spacing: -1.5px; color: var(--blue); margin-bottom: 16px; }
+    .sec.light .sec-sub { font-size: 18px; color: var(--sub); max-width: 520px; margin-bottom: 52px; line-height: 1.6; }
+    .sec.dark h2 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 44px; line-height: 1.08; letter-spacing: -1.5px; color: #FFFFFF; margin-bottom: 16px; }
+    .sec.dark .sec-sub { font-size: 18px; color: rgba(255,255,255,.6); max-width: 520px; margin-bottom: 52px; line-height: 1.6; }
+
+    /* ── PROBLEMA ─────────────────────────────────────────── */
+    .pain-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--brd); border: 1px solid var(--brd); }
+    .pain-card { background: var(--white); padding: 44px 36px; }
+    .pain-num { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2px; color: var(--yellow); margin-bottom: 20px; display: block; }
+    .pain-card h3 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 19px; color: var(--blue); margin-bottom: 12px; line-height: 1.2; }
+    .pain-card p { font-size: 15px; color: var(--sub); line-height: 1.65; }
+
+    /* ── COMO FUNCIONA ─────────────────────────────────────── */
+    .steps { display: flex; flex-direction: column; gap: 1px; background: var(--brd-b); border: 1px solid var(--brd-b); }
+    .step { background: rgba(255,255,255,.04); padding: 40px 48px; display: grid; grid-template-columns: 80px 1fr; gap: 36px; align-items: start; }
+    .step-num { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 36px; color: var(--yellow); line-height: 1; padding-top: 4px; }
+    .step h3 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 21px; color: #FFF; margin-bottom: 10px; }
+    .step p { font-size: 15px; color: rgba(255,255,255,.65); line-height: 1.65; }
+
+    /* ══════════════════════════════════════════════════════
+       ── MÓDULOS — SHOWCASE INTERATIVO (NOVA SEÇÃO) ───────
+       ══════════════════════════════════════════════════════ */
+
+    .mod-showcase-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 40px; margin-top: 52px; align-items: start; }
+
+    /* ─ TABS (esquerda) ─ */
+    .mod-tabs { display: flex; flex-direction: column; gap: 2px; }
+
+    .mod-tab {
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 16px 20px;
+      background: none; border: none; cursor: pointer;
+      text-align: left;
+      border-left: 3px solid transparent;
+      position: relative; overflow: hidden;
+      transition: background .2s, border-color .2s;
+    }
+    .mod-tab:hover { background: rgba(20,40,72,.05); }
+    .mod-tab.active { background: rgba(20,40,72,.06); border-left-color: var(--yellow); }
+
+    .mt-label {
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 14px; color: var(--blue); line-height: 1;
+    }
+    .mt-desc { font-size: 12px; color: var(--muted); }
+
+    /* Barra de progresso */
+    .mod-progress {
+      position: absolute; bottom: 0; left: 0;
+      height: 2px; width: 0%;
+      background: var(--yellow);
+    }
+
+    /* Chips adicionais abaixo das tabs */
+    .mod-more { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .mod-more-chip {
+      padding: 6px 14px; border: 1px solid var(--brd);
+      border-radius: 2px; font-family: 'Orbitron', sans-serif;
+      font-size: 7.5px; font-weight: 700; letter-spacing: 1px;
+      color: var(--muted); background: var(--white);
+      text-transform: uppercase;
+    }
+    .mod-more-chip.feat { border-color: var(--yellow); background: var(--yellow); color: var(--blue); }
+
+    /* ─ FRAME (direita) ─ */
+    .mod-frame {
+      border-radius: 10px; overflow: hidden;
+      box-shadow: 0 8px 48px rgba(0,0,0,.14);
+      border: 1px solid var(--brd);
+    }
+
+    /* Barra de browser */
+    .mod-browser-bar {
+      background: #EBEBEB; padding: 10px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .bb-dots { display: flex; gap: 6px; }
+    .bb-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .bb-dot:nth-child(1) { background: #FF5F57; }
+    .bb-dot:nth-child(2) { background: #FFBD2E; }
+    .bb-dot:nth-child(3) { background: #28C840; }
+    .bb-url {
+      flex: 1; background: var(--white); border-radius: 5px;
+      padding: 5px 12px; font-size: 11px; color: #888; text-align: center;
+      letter-spacing: .3px;
+    }
+
+    /* Área de screenshot */
+    .mod-screen-area { position: relative; aspect-ratio: 16/9; background: #EAEAE8; overflow: hidden; }
+
+    .mod-screen {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0; transition: opacity .5s ease;
+    }
+    .mod-screen.active { opacity: 1; }
+    .mod-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; }
+
+    /* ─ MOCKUP CSS (para módulos sem screenshot) ─ */
+    .app-mock { display: flex; width: 100%; height: 100%; font-size: 10px; overflow: hidden; }
+    .am-sb {
+      width: 148px; flex-shrink: 0; background: var(--blue);
+      display: flex; flex-direction: column; padding: 14px 10px; gap: 2px;
+    }
+    .am-logo { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px; color: var(--yellow); letter-spacing: 1px; margin-bottom: 1px; }
+    .am-tag  { font-size: 7px; color: rgba(255,255,255,.35); letter-spacing: 1px; margin-bottom: 10px; }
+    .am-user { font-size: 8px; color: rgba(255,255,255,.65); padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 6px; font-weight: 600; }
+    .am-role { font-size: 7px; color: rgba(255,255,255,.35); }
+    .am-ni {
+      padding: 6px 8px; border-radius: 4px;
+      font-size: 8.5px; color: rgba(255,255,255,.5);
+    }
+    .am-ni.active { background: rgba(242,199,68,.15); color: var(--yellow); font-weight: 600; }
+    .am-main { flex: 1; background: #F5F5F3; padding: 16px 18px; overflow: hidden; }
+    .am-ph { font-size: 15px; font-weight: 700; color: var(--blue); margin-bottom: 3px; }
+    .am-ps { font-size: 10px; color: #888; margin-bottom: 14px; }
+    .am-row { height: 36px; background: #FFF; border-radius: 4px; margin-bottom: 6px; display: flex; align-items: center; padding: 0 12px; justify-content: space-between; border: 1px solid rgba(0,0,0,.07); }
+    .am-rl { font-size: 9px; color: #444; }
+    .am-rv { font-size: 9px; font-weight: 700; color: var(--blue); }
+    .am-rv.pos { color: #2BAA6B; }
+    .am-rv.neg { color: #D94F4F; }
+    .am-cards { display: flex; gap: 8px; margin-bottom: 8px; }
+    .am-card { flex: 1; background: #FFF; border-radius: 4px; padding: 8px 10px; border: 1px solid rgba(0,0,0,.07); }
+    .am-cl { font-size: 8px; color: #888; margin-bottom: 3px; }
+    .am-cv { font-size: 13px; font-weight: 700; color: var(--blue); }
+
+    /* ── IMPACTO ───────────────────────────────────────────── */
+    .impacto-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--brd-b); border: 1px solid var(--brd-b); }
+    .impacto-card { background: rgba(255,255,255,.04); padding: 44px 36px; transition: background .2s; }
+    .impacto-card:hover { background: rgba(255,255,255,.08); }
+    .imp-num { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 2px; color: var(--yellow); margin-bottom: 20px; display: block; }
+    .impacto-card h3 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 19px; color: #FFF; margin-bottom: 12px; line-height: 1.2; }
+    .impacto-card p { font-size: 15px; color: rgba(255,255,255,.6); line-height: 1.65; }
+    .impacto-quote { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--brd-b); text-align: center; }
+    .impacto-quote blockquote { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -.5px; line-height: 1.3; color: var(--yellow); max-width: 640px; margin: 0 auto; }
+    .impacto-quote cite { display: block; margin-top: 14px; font-size: 14px; font-style: normal; color: rgba(255,255,255,.35); }
+
+    /* ── ROI ───────────────────────────────────────────────── */
+    .roi { background: var(--bg); padding: 100px 0; }
+    .roi-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
+    .roi h2 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 44px; line-height: 1.08; letter-spacing: -1.5px; color: var(--blue); margin-bottom: 20px; }
+    .roi p { font-size: 17px; color: var(--sub); line-height: 1.7; margin-bottom: 36px; }
+    .roi-numbers { display: flex; flex-direction: column; }
+    .roi-number-item { padding: 28px 0; border-top: 1px solid var(--brd); }
+    .roi-number-item:first-child { border-top: none; padding-top: 0; }
+    .rn-val { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 56px; letter-spacing: -2px; color: var(--blue); line-height: 1; }
+    .rn-val.hl { color: var(--yellow); }
+    .rn-lbl { font-size: 13px; color: var(--muted); margin-top: 7px; letter-spacing: .5px; }
+
+    /* ── PLANOS ─────────────────────────────────────────────── */
+    .planos { background: var(--blue); padding: 88px 0; }
+    .planos .eyebrow { color: var(--yellow); }
+    .planos h2 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 44px; line-height: 1.08; letter-spacing: -1.5px; color: #FFF; margin-bottom: 52px; }
+    .plan-wrapper { max-width: 820px; margin: 0 auto; }
+    .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .plan-card { border-radius: 16px; padding: 44px 40px; display: flex; flex-direction: column; }
+    .plan-card.mensal { background: var(--white); box-shadow: 0 4px 32px rgba(0,0,0,.15); }
+    .plan-card.anual  { background: var(--yellow); box-shadow: 0 12px 48px rgba(0,0,0,.25); transform: scale(1.02); }
+    .plan-badge { display: inline-block; align-self: flex-start; background: var(--blue); color: var(--yellow); font-family: 'Orbitron', sans-serif; font-size: 7px; font-weight: 700; letter-spacing: 2px; padding: 5px 12px; border-radius: 2px; margin-bottom: 20px; }
+    .plan-tier { font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; color: var(--muted); margin-bottom: 20px; display: block; }
+    .plan-card.anual .plan-tier { color: rgba(20,40,72,.55); }
+    .plan-price { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 52px; letter-spacing: -2px; color: var(--blue); line-height: 1; margin-bottom: 4px; }
+    .plan-period { font-size: 15px; color: var(--muted); }
+    .plan-card.anual .plan-period { color: rgba(20,40,72,.55); }
+    .plan-annual-note { font-size: 12px; color: rgba(20,40,72,.5); margin-top: 4px; margin-bottom: 8px; }
+    .plan-savings { font-size: 13px; font-weight: 700; color: var(--blue); }
+    .plan-div { height: 1px; background: var(--brd); margin: 24px 0; }
+    .plan-card.anual .plan-div { background: rgba(20,40,72,.15); }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .plan-features li { font-size: 14px; color: var(--sub); display: flex; gap: 12px; align-items: flex-start; line-height: 1.4; }
+    .plan-card.anual .plan-features li { color: var(--blue); }
+    .plan-features li::before { content: '—'; color: var(--silver); flex-shrink: 0; }
+    .plan-card.anual .plan-features li::before { color: rgba(20,40,72,.35); }
+    .plan-cta { margin-top: 32px; display: block; text-align: center; padding: 15px 24px; border-radius: 6px; font-weight: 700; font-size: 14px; text-decoration: none; transition: all .2s; }
+    .plan-card.mensal .plan-cta { background: var(--blue); color: #FFF; }
+    .plan-card.mensal .plan-cta:hover { background: #1a3460; }
+    .plan-card.anual  .plan-cta { background: var(--blue); color: var(--yellow); }
+    .plan-card.anual  .plan-cta:hover { background: #1a3460; }
+    .plan-note { text-align: center; margin-top: 24px; font-size: 12px; color: rgba(255,255,255,.35); }
+
+    /* ── CTA FINAL ──────────────────────────────────────────── */
+    .cta-final { padding: 100px 0; text-align: center; background: var(--bg); }
+    .cta-final h2 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 52px; letter-spacing: -2px; color: var(--blue); margin-bottom: 18px; line-height: 1.08; }
+    .cta-final p { font-size: 18px; color: var(--sub); margin-bottom: 44px; }
+    .cta-final .note { font-size: 13px; color: var(--muted); margin-top: 22px; }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer { background: var(--blue); padding: 52px 0; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; }
+    .footer-brand .fb-main { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 2px; color: #FFF; }
+    .footer-brand .fb-sub  { font-family: 'Orbitron', sans-serif; font-size: 7px; letter-spacing: 3px; color: rgba(255,255,255,.35); margin-top: 4px; }
+    .footer-copy { font-size: 13px; color: rgba(255,255,255,.35); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <span class="lg-main">RESULTA</span>
+      <span class="lg-sub">by 2F BUSINESS SOLUTIONS</span>
+    </a>
+    <div class="nav-links">
+      <a href="#problema">Problema</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#modulos">Módulos</a>
+      <a href="#planos">Planos</a>
+    </div>
+    <a class="btn btn-outline" href="https://app.resulta2f.com.br" style="margin-right:8px">Acessar</a><a class="btn btn-blue" href="https://app.resulta2f.com.br">Testar grátis</a>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">
+      <span class="he-brand">RESULTA</span>
+      <span class="he-sub">SISTEMA DE GESTÃO FINANCEIRA</span>
+    </div>
+    <h1>Seu DRE em<br>menos de <em>5 minutos.</em></h1>
+    <p>Faça upload das NFs de venda, informe os custos e receba o DRE completo. Sem planilha, sem espera, sem achismo.</p>
+    <div class="hero-actions">
+      <a class="btn btn-blue" href="https://app.resulta2f.com.br">Começar agora &mdash; 7 dias grátis</a>
+      <a class="btn btn-outline" href="#como-funciona">Ver como funciona</a>
+    </div>
+    <p class="hero-note">Sem cartão de crédito. Acesso imediato após o cadastro.</p>
+  </div>
+</section>
+
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-val">R$ 4k+</div>
+        <div class="stat-lbl">CUSTO DE UM ANALISTA FINANCEIRO POR MÊS</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">40h+</div>
+        <div class="stat-lbl">HORAS GASTAS EM PLANILHAS MENSALMENTE</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">&lt; 5min</div>
+        <div class="stat-lbl">TEMPO PARA GERAR O DRE COM O RESULTA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- PROBLEMA -->
+<section class="sec light" id="problema">
+  <div class="container">
+    <span class="eyebrow">O PROBLEMA</span>
+    <h2>A maioria das PMEs<br>decide sem dados reais.</h2>
+    <p class="sec-sub">Sem um sistema de resultado, o gestor decide no feeling. E o feeling custa caro.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="pain-num">01</span>
+        <h3>Resultado só depois de semanas</h3>
+        <p>O relatório chega do contador quando já é tarde demais para corrigir o rumo do mês.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-num">02</span>
+        <h3>Alguém digitando NF na mão</h3>
+        <p>Dias de trabalho em planilhas que deveriam ser automáticas — com erro humano em cada linha.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-num">03</span>
+        <h3>Decisão sem CMV e margem real</h3>
+        <p>Sem custo e margem calculados em tempo real, qualquer decisão de preço é um tiro no escuro.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- COMO FUNCIONA -->
+<section class="sec dark" id="como-funciona">
+  <div class="container">
+    <span class="eyebrow">COMO FUNCIONA</span>
+    <h2>Três passos.<br>Resultado completo.</h2>
+    <p class="sec-sub">O processo inteiro leva menos tempo do que uma reunião de alinhamento.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div>
+          <h3>Upload das NFs de venda</h3>
+          <p>Carregue as notas fiscais do período. O Resulta lê, interpreta e organiza automaticamente os dados de faturamento por cliente, produto e período.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div>
+          <h3>Informe o CMV e as despesas</h3>
+          <p>Lance o custo das mercadorias vendidas e as despesas operacionais do período. Campos diretos, sem complicação contábil.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div>
+          <h3>DRE completo em menos de 5 minutos</h3>
+          <p>Faturamento bruto, deduções, CMV, lucro bruto, despesas e resultado líquido — tudo consolidado e pronto para decisão.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ MÓDULOS — SHOWCASE INTERATIVO ══════════════════════════ -->
+<!--
+  INSTRUÇÕES PARA AS IMAGENS:
+  Crie a pasta  saidas/img/  e salve os prints do sistema com esses nomes:
+    img/mod-dashboard.png   → print da tela Dashboard
+    img/mod-upload.png      → print da tela Upload NFs
+  Os outros módulos usam mockup CSS enquanto os prints não estão disponíveis.
+-->
+<section class="sec light" id="modulos">
+  <div class="container">
+    <span class="eyebrow">MÓDULOS</span>
+    <h2>Conheça o Resulta<br>por dentro.</h2>
+    <p class="sec-sub">11 módulos integrados. Cada um eliminando uma tarefa que hoje consome o seu tempo.</p>
+
+    <div class="mod-showcase-wrap">
+
+      <!-- TABS (esquerda) -->
+      <div>
+        <div class="mod-tabs" id="modTabs">
+
+          <button class="mod-tab active" data-target="screen-dashboard">
+            <span class="mt-label">Dashboard</span>
+            <span class="mt-desc">Visão geral do resultado financeiro</span>
+            <span class="mod-progress" id="prog-0"></span>
+          </button>
+
+          <button class="mod-tab" data-target="screen-upload">
+            <span class="mt-label">Upload de NFs</span>
+            <span class="mt-desc">Leitura automática por IA</span>
+            <span class="mod-progress" id="prog-1"></span>
+          </button>
+
+          <button class="mod-tab" data-target="screen-dre">
+            <span class="mt-label">DRE Automatizado</span>
+            <span class="mt-desc">Demonstrativo do exercício em minutos</span>
+            <span class="mod-progress" id="prog-2"></span>
+          </button>
+
+          <button class="mod-tab" data-target="screen-fluxo">
+            <span class="mt-label">Fluxo de Caixa</span>
+            <span class="mt-desc">Entradas e saídas em tempo real</span>
+            <span class="mod-progress" id="prog-3"></span>
+          </button>
+
+          <button class="mod-tab" data-target="screen-clientes">
+            <span class="mt-label">Gestão de Clientes</span>
+            <span class="mt-desc">Rentabilidade por cliente</span>
+            <span class="mod-progress" id="prog-4"></span>
+          </button>
+
+          <button class="mod-tab" data-target="screen-produtos">
+            <span class="mt-label">Controle de Produtos</span>
+            <span class="mt-desc">Margem e volume por produto</span>
+            <span class="mod-progress" id="prog-5"></span>
+          </button>
+
+        </div>
+
+        <!-- Outros módulos como chips -->
+        <div class="mod-more">
+          <span class="mod-more-chip">Histórico de NFs</span>
+          <span class="mod-more-chip">Contas a Receber</span>
+          <span class="mod-more-chip">Gestão de Despesas</span>
+          <span class="mod-more-chip">Tracking</span>
+          <span class="mod-more-chip feat">IA Aplicada</span>
+        </div>
+      </div>
+
+      <!-- FRAME (direita) -->
+      <div class="mod-frame">
+        <div class="mod-browser-bar">
+          <div class="bb-dots">
+            <span class="bb-dot"></span>
+            <span class="bb-dot"></span>
+            <span class="bb-dot"></span>
+          </div>
+          <div class="bb-url" id="modUrl">resulta.app / dashboard</div>
+        </div>
+        <div class="mod-screen-area">
+
+          <!-- Dashboard — screenshot real -->
+          <div class="mod-screen active" id="screen-dashboard">
+            <img src="img/mod-dashboard.png" alt="Dashboard Resulta"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="app-mock" style="display:none">
+              <div class="am-sb">
+                <div class="am-logo">Resulta</div>
+                <div class="am-tag">Da NF ao DRE</div>
+                <div class="am-user">Felipe S. Teixeira<br><span class="am-role">ADMIN</span></div>
+                <div class="am-ni active">Dashboard</div>
+                <div class="am-ni">Upload NFs</div>
+                <div class="am-ni">Histórico</div>
+                <div class="am-ni">Clientes</div>
+                <div class="am-ni">DRE</div>
+              </div>
+              <div class="am-main">
+                <div class="am-ph">Dashboard</div>
+                <div class="am-ps">Visão geral com CMV, margem e despesas</div>
+                <div class="am-cards">
+                  <div class="am-card"><div class="am-cl">FATURAMENTO</div><div class="am-cv">R$ 223k</div></div>
+                  <div class="am-card"><div class="am-cl">CMV</div><div class="am-cv">R$ 98k</div></div>
+                  <div class="am-card"><div class="am-cl">RESULTADO</div><div class="am-cv" style="color:#2BAA6B">R$ 69k</div></div>
+                </div>
+                <div class="am-row"><span class="am-rl">Margem bruta</span><span class="am-rv pos">31%</span></div>
+                <div class="am-row"><span class="am-rl">NFs processadas</span><span class="am-rv">68</span></div>
+                <div class="am-row"><span class="am-rl">Despesas op.</span><span class="am-rv">R$ 35.884</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload NFs — screenshot real -->
+          <div class="mod-screen" id="screen-upload">
+            <img src="img/mod-upload.png" alt="Upload NFs Resulta"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="app-mock" style="display:none">
+              <div class="am-sb">
+                <div class="am-logo">Resulta</div>
+                <div class="am-tag">Da NF ao DRE</div>
+                <div class="am-user">Felipe S. Teixeira<br><span class="am-role">ADMIN</span></div>
+                <div class="am-ni">Dashboard</div>
+                <div class="am-ni active">Upload NFs</div>
+                <div class="am-ni">Histórico</div>
+                <div class="am-ni">Clientes</div>
+                <div class="am-ni">DRE</div>
+              </div>
+              <div class="am-main">
+                <div class="am-ph">Upload de Notas Fiscais</div>
+                <div class="am-ps">Envie PDFs do DANFE — a IA extrai e salva automaticamente</div>
+                <div style="border: 2px dashed #F2C744; border-radius:6px; padding:20px; text-align:center; margin-top:12px; background:#FFFDF0">
+                  <div style="font-size:11px;font-weight:700;color:#142848;margin-bottom:4px">Arraste os PDFs aqui</div>
+                  <div style="font-size:9px;color:#888">ou clique para selecionar arquivos</div>
+                </div>
+                <div style="margin-top:12px;font-size:9px;color:#888;font-weight:600">COMO FUNCIONA</div>
+                <div class="am-row" style="margin-top:6px"><span class="am-rl">1. Selecione os PDFs das DANFEs</span></div>
+                <div class="am-row"><span class="am-rl">2. A IA extrai os dados automaticamente</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DRE — mockup CSS -->
+          <div class="mod-screen" id="screen-dre">
+            <div class="app-mock">
+              <div class="am-sb">
+                <div class="am-logo">Resulta</div>
+                <div class="am-tag">Da NF ao DRE</div>
+                <div class="am-user">Felipe S. Teixeira<br><span class="am-role">ADMIN</span></div>
+                <div class="am-ni">Dashboard</div>
+                <div class="am-ni">Upload NFs</div>
+                <div class="am-ni">Histórico</div>
+                <div class="am-ni">Clientes</div>
+                <div class="am-ni active">DRE</div>
+              </div>
+              <div class="am-main">
+                <div class="am-ph">DRE</div>
+                <div class="am-ps">Demonstrativo de Resultado do Exercício</div>
+                <div class="am-row"><span class="am-rl">Faturamento Bruto</span><span class="am-rv">R$ 223.645</span></div>
+                <div class="am-row"><span class="am-rl">(-) Deduções e Tributos</span><span class="am-rv neg">R$ 20.128</span></div>
+                <div class="am-row"><span class="am-rl">Faturamento Líquido</span><span class="am-rv">R$ 203.517</span></div>
+                <div class="am-row"><span class="am-rl">(-) CMV</span><span class="am-rv neg">R$ 98.163</span></div>
+                <div class="am-row"><span class="am-rl">Lucro Bruto</span><span class="am-rv pos">R$ 105.354</span></div>
+                <div class="am-row"><span class="am-rl">(-) Despesas Op.</span><span class="am-rv neg">R$ 35.884</span></div>
+                <div class="am-row" style="border-color:var(--yellow)"><span class="am-rl" style="font-weight:700;color:var(--blue)">RESULTADO LÍQUIDO</span><span class="am-rv pos" style="font-size:11px">R$ 69.469</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fluxo de Caixa — mockup CSS -->
+          <div class="mod-screen" id="screen-fluxo">
+            <div class="app-mock">
+              <div class="am-sb">
+                <div class="am-logo">Resulta</div>
+                <div class="am-tag">Da NF ao DRE</div>
+                <div class="am-user">Felipe S. Teixeira<br><span class="am-role">ADMIN</span></div>
+                <div class="am-ni">Dashboard</div>
+                <div class="am-ni">Upload NFs</div>
+                <div class="am-ni">Contas a Receber</div>
+                <div class="am-ni active">Fluxo de Caixa</div>
+                <div class="am-ni">DRE</div>
+              </div>
+              <div class="am-main">
+                <div class="am-ph">Fluxo de Caixa</div>
+                <div class="am-ps">Entradas e saídas do período</div>
+                <div class="am-cards">
+                  <div class="am-card"><div class="am-cl">ENTRADAS</div><div class="am-cv" style="color:#2BAA6B">R$ 223k</div></div>
+                  <div class="am-card"><div class="am-cl">SAÍDAS</div><div class="am-cv neg">R$ 154k</div></div>
+                </div>
+                <div class="am-row"><span class="am-rl">Saldo do período</span><span class="am-rv pos">R$ 69.469</span></div>
+                <div class="am-row"><span class="am-rl">A receber (pendente)</span><span class="am-rv">R$ 42.800</span></div>
+                <div class="am-row"><span class="am-rl">Despesas pagas</span><span class="am-rv neg">R$ 35.884</span></div>
+                <div class="am-row"><span class="am-rl">Projeção próx. 30 dias</span><span class="am-rv pos">R$ 38.200</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clientes — mockup CSS -->
+          <div class="mod-screen" id="screen-clientes">
+            <div class="app-mock">
+              <div class="am-sb">
+                <div class="am-logo">Resulta</div>
+                <div class="am-tag">Da NF ao DRE</div>
+                <div class="am-user">Felipe S. Teixeira<br><span class="am-role">ADMIN</span></div>
+                <div class="am-ni">Dashboard</div>
+                <div class="am-ni active">Clientes</div>
+                <div class="am-ni">Produtos</div>
+                <div class="am-ni">Contas a Receber</div>
+                <div class="am-ni">DRE</div>
+              </div>
+              <div class="am-main">
+                <div class="am-ph">Gestão de Clientes</div>
+                <div class="am-ps">Faturamento e rentabilidade por cliente</div>
+                <div class="am-row"><span class="am-rl">Ecosolartec</span><span class="am-rv pos">31% margem</span></div>
+                <div class="am-row"><span class="am-rl">Nelson Castro</span><span class="am-rv pos">27% margem</span></div>
+                <div class="am-row"><span class="am-rl">Power Energia</span><span class="am-rv">22% margem</span></div>
+                <div class="am-row"><span class="am-rl">Ideia Soltec</span><span class="am-rv neg">8% margem</span></div>
+                <div class="am-row"><span class="am-rl">Energia Prosol</span><span class="am-rv pos">34% margem</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produtos — mockup CSS -->
+          <div class="mod-screen" id="screen-produtos">
+            <div class="app-mock">
+              <div class="am-sb">
+                <div class="am-logo">Resulta</div>
+                <div class="am-tag">Da NF ao DRE</div>
+                <div class="am-user">Felipe S. Teixeira<br><span class="am-role">ADMIN</span></div>
+                <div class="am-ni">Dashboard</div>
+                <div class="am-ni">Clientes</div>
+                <div class="am-ni active">Produtos</div>
+                <div class="am-ni">DRE</div>
+                <div class="am-ni">Fluxo de Caixa</div>
+              </div>
+              <div class="am-main">
+                <div class="am-ph">Controle de Produtos</div>
+                <div class="am-ps">Margem e volume por produto</div>
+                <div class="am-row"><span class="am-rl">Trilho Solar H – 4.8...</span><span class="am-rv pos">29% do fat.</span></div>
+                <div class="am-row"><span class="am-rl">Parafuso de Suporte...</span><span class="am-rv">13.9% do fat.</span></div>
+                <div class="am-row"><span class="am-rl">Grampo Terminal "Z"</span><span class="am-rv">6.1% do fat.</span></div>
+                <div class="am-row"><span class="am-rl">Trilho Solar "H" – 2...</span><span class="am-rv">5.0% do fat.</span></div>
+                <div class="am-row"><span class="am-rl">Mini Trilho "T" Sol...</span><span class="am-rv neg">3.4% do fat.</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.mod-screen-area -->
+      </div><!-- /.mod-frame -->
+
+    </div><!-- /.mod-showcase-wrap -->
+  </div>
+</section>
+
+
+<!-- IMPACTO -->
+<section class="sec dark" id="impacto">
+  <div class="container">
+    <span class="eyebrow">O QUE MUDA NO SEU DIA</span>
+    <h2>Pare de gerenciar planilha.<br>Comece a gerenciar crescimento.</h2>
+    <p class="sec-sub">Enquanto você preenche célula por célula, seu concorrente está fechando negócio. O Resulta assume o trabalho pesado do financeiro para que você volte a fazer o que ninguém mais pode: vender, negociar e crescer.</p>
+    <div class="impacto-grid">
+      <div class="impacto-card">
+        <span class="imp-num">01</span>
+        <h3>Menos 40 horas por mês em controle manual</h3>
+        <p>Subiu a NF, acabou. Faturamento, margem, DRE e contas a receber se montam sozinhos. Aquelas noites revisando planilha viram noites planejando o próximo cliente.</p>
+      </div>
+      <div class="impacto-card">
+        <span class="imp-num">02</span>
+        <h3>Saiba exatamente onde está seu dinheiro</h3>
+        <p>Qual produto dá margem? Qual cliente é rentável? Qual despesa está comendo seu lucro? Você vai parar de achar e começar a saber — com número na tela, não no feeling.</p>
+      </div>
+      <div class="impacto-card">
+        <span class="imp-num">03</span>
+        <h3>Negocie com dados</h3>
+        <p>Antes de dar desconto, abra o Resulta. Antes de aceitar um prazo, veja o fluxo de caixa. Cada decisão comercial passa a ter um número real por trás — e isso muda o jogo.</p>
+      </div>
+    </div>
+    <div class="impacto-quote">
+      <blockquote>"Quem conhece seus números não negocia no escuro — domina a mesa."</blockquote>
+      <cite>— A vantagem de quem usa o Resulta</cite>
+    </div>
+  </div>
+</section>
+
+
+<!-- ROI -->
+<section class="roi">
+  <div class="container">
+    <div class="roi-inner">
+      <div>
+        <span class="eyebrow">RETORNO SOBRE O INVESTIMENTO</span>
+        <h2>O retorno aparece<br>no primeiro mês.</h2>
+        <p>Um analista financeiro custa R$ 4.000 a R$ 6.000 por mês. O Resulta entrega a mesma visão gerencial por uma fração desse custo.</p>
+        <a class="btn btn-blue" href="#planos">Ver os planos</a>
+      </div>
+      <div class="roi-numbers">
+        <div class="roi-number-item">
+          <div class="rn-val">8x</div>
+          <div class="rn-lbl">RETORNO SOBRE O INVESTIMENTO NO 1º MÊS</div>
+        </div>
+        <div class="roi-number-item">
+          <div class="rn-val hl">R$ 397</div>
+          <div class="rn-lbl">PLANO ANUAL &mdash; MENOR CUSTO POR MÊS</div>
+        </div>
+        <div class="roi-number-item">
+          <div class="rn-val">7 dias</div>
+          <div class="rn-lbl">PERÍODO GRATUITO SEM CARTÃO</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- PLANOS -->
+<section class="planos" id="planos">
+  <div class="container">
+    <span class="eyebrow">PLANOS</span>
+    <h2>Escolha o plano<br>do seu negócio.</h2>
+    <div class="plan-wrapper">
+      <div class="plan-grid">
+        <div class="plan-card mensal">
+          <span class="plan-tier">MENSAL</span>
+          <div class="plan-price">R$ 497</div>
+          <div class="plan-period">/mês</div>
+          <div class="plan-div"></div>
+          <ul class="plan-features">
+            <li>Upload ilimitado de XMLs</li>
+            <li>Usuários ilimitados</li>
+            <li>Até 400 NFs por mês</li>
+            <li>Todas as funcionalidades</li>
+            <li>Consultoria de implantação</li>
+            <li>Suporte via WhatsApp</li>
+          </ul>
+          <a class="plan-cta" href="https://app.resulta2f.com.br">Começar 7 dias grátis</a>
+        </div>
+        <div class="plan-card anual">
+          <div class="plan-badge">RECOMENDADO</div>
+          <span class="plan-tier">ANUAL</span>
+          <div class="plan-price">R$ 397</div>
+          <div class="plan-period">/mês</div>
+          <div class="plan-annual-note">cobrado anualmente &middot; R$ 4.764/ano</div>
+          <div class="plan-savings">Economize R$ 1.200 por ano</div>
+          <div class="plan-div"></div>
+          <ul class="plan-features">
+            <li>Upload ilimitado de XMLs</li>
+            <li>Usuários ilimitados</li>
+            <li>Até 400 NFs por mês</li>
+            <li>Todas as funcionalidades</li>
+            <li>Consultoria de implantação</li>
+            <li>Suporte via WhatsApp</li>
+          </ul>
+          <a class="plan-cta" href="https://app.resulta2f.com.br">Assinar plano anual</a>
+        </div>
+      </div>
+      <p class="plan-note">7 dias gratuitos em qualquer plano &middot; Sem cartão de crédito &middot; Cancele quando quiser</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="container">
+    <h2>Pronto para ter visibilidade<br>financeira de verdade?</h2>
+    <p>7 dias gratuitos. Sem cartão de crédito. Sem burocracia.</p>
+    <a class="btn btn-blue" href="https://app.resulta2f.com.br">Testar o Resulta agora</a>
+    <p class="note">Acesso imediato após o cadastro. Cancelamento a qualquer momento.</p>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="fb-main">RESULTA</div>
+        <div class="fb-sub">by 2F BUSINESS SOLUTIONS</div>
+      </div>
+      <div class="footer-copy">&copy; 2026 2F Business Solutions. Todos os direitos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  const tabs     = Array.from(document.querySelectorAll('.mod-tab'));
+  const screens  = Array.from(document.querySelectorAll('.mod-screen'));
+  const urlBar   = document.getElementById('modUrl');
+  const INTERVAL = 5000;
+  const URLS     = [
+    'app.resulta2f.com.br / dashboard',
+    'app.resulta2f.com.br / upload-nfs',
+    'app.resulta2f.com.br / dre',
+    'app.resulta2f.com.br / fluxo-de-caixa',
+    'app.resulta2f.com.br / clientes',
+    'app.resulta2f.com.br / produtos'
+  ];
+
+  let timer = null;
+  let current = 0;
+
+  function activate(idx) {
+    tabs.forEach((t, i) => {
+      t.classList.toggle('active', i === idx);
+      const prog = t.querySelector('.mod-progress');
+      prog.style.transition = 'none';
+      prog.style.width = '0%';
+    });
+    screens.forEach((s, i) => s.classList.toggle('active', i === idx));
+    urlBar.textContent = URLS[idx] || URLS[0];
+    current = idx;
+
+    // Animar barra de progresso da tab ativa
+    const activeBar = tabs[idx].querySelector('.mod-progress');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      activeBar.style.transition = `width ${INTERVAL}ms linear`;
+      activeBar.style.width = '100%';
+    }));
+  }
+
+  function startAuto() {
+    clearInterval(timer);
+    timer = setInterval(() => {
+      activate((current + 1) % tabs.length);
+    }, INTERVAL);
+  }
+
+  tabs.forEach((tab, idx) => {
+    tab.addEventListener('click', () => {
+      activate(idx);
+      clearInterval(timer);
+      // Retoma auto-rotação após 1.5× o intervalo
+      setTimeout(startAuto, INTERVAL * 1.5);
+    });
+  });
+
+  // Iniciar
+  activate(0);
+  startAuto();
+</script>
+</body>
+</html>
