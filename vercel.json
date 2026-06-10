@@ -1,5 +1,4 @@
 ﻿{
-  "rewrites": [
-    { "source": "/cadastro", "destination": "/cadastro.html" }
-  ]
+  "cleanUrls": true,
+  "trailingSlash": false
 }
