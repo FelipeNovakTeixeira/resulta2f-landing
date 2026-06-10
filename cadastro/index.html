@@ -11,8 +11,6 @@
     :root { --bg: #F7F7F5; --white: #FFFFFF; --blue: #142848; --yellow: #F2C744; --sub: #444444; --muted: #888888; --brd: rgba(0,0,0,0.10); }
     html { scroll-behavior: smooth; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--blue); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
-
-    /* NAV */
     nav { background: rgba(247,247,245,0.96); backdrop-filter: blur(14px); border-bottom: 1px solid var(--brd); }
     .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; max-width: 1100px; margin: 0 auto; padding: 0 40px; }
     .nav-logo { display: flex; flex-direction: column; text-decoration: none; }
@@ -20,41 +18,30 @@
     .nav-logo .lg-sub  { font-family: 'Orbitron', sans-serif; font-weight: 400; font-size: 7px; letter-spacing: 3px; color: var(--muted); margin-top: 3px; }
     .nav-login { font-size: 14px; color: var(--sub); text-decoration: none; font-weight: 500; }
     .nav-login:hover { color: var(--blue); }
-
-    /* MAIN */
     main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 20px; }
-
     .card { background: var(--white); border: 1px solid var(--brd); border-radius: 8px; padding: 52px 48px; width: 100%; max-width: 480px; }
-
     .card-eyebrow { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 4px; color: var(--yellow); margin-bottom: 14px; display: block; }
     .card h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.8px; margin-bottom: 8px; }
     .card p { font-size: 15px; color: var(--sub); margin-bottom: 36px; line-height: 1.6; }
-
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     .form-group input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--brd); border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--blue); background: var(--bg); transition: border-color .2s; }
     .form-group input:focus { outline: none; border-color: var(--blue); background: var(--white); }
     .form-group input::placeholder { color: #bbb; }
-
     .btn-submit { width: 100%; padding: 14px; background: var(--blue); color: #fff; border: none; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: background .2s; margin-top: 8px; }
     .btn-submit:hover { background: #1a3460; }
     .btn-submit:disabled { background: #999; cursor: not-allowed; }
-
     .divider { text-align: center; font-size: 13px; color: var(--muted); margin: 24px 0 0; }
     .divider a { color: var(--blue); font-weight: 600; text-decoration: none; }
     .divider a:hover { text-decoration: underline; }
-
     .trial-note { display: flex; align-items: center; gap: 10px; background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 6px; padding: 12px 16px; margin-bottom: 28px; font-size: 13px; color: #166534; font-weight: 500; }
-
     .msg { display: none; padding: 14px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
     .msg.success { background: #F0FDF4; border: 1px solid #86EFAC; color: #166534; display: block; }
     .msg.error   { background: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; display: block; }
-
     footer { text-align: center; padding: 24px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--brd); }
   </style>
 </head>
 <body>
-
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="/">
@@ -64,19 +51,15 @@
     <a class="nav-login" href="https://app.resulta2f.com.br">Já tenho conta →</a>
   </div>
 </nav>
-
 <main>
   <div class="card">
     <span class="card-eyebrow">COMEÇAR AGORA</span>
     <h1>Crie sua conta grátis</h1>
     <p>7 dias gratuitos, sem cartão de crédito. Acesso imediato após o cadastro.</p>
-
     <div class="trial-note">
       ✅ 7 dias grátis &nbsp;·&nbsp; Sem cartão &nbsp;·&nbsp; Cancele quando quiser
     </div>
-
     <div class="msg" id="msg"></div>
-
     <form id="cadastroForm">
       <div class="form-group">
         <label>Seu nome</label>
@@ -91,21 +74,21 @@
         <input type="text" id="nomeEmpresa" placeholder="Minha Empresa LTDA" required />
       </div>
       <div class="form-group">
-        <label>Telefone / WhatsApp <span style="font-weight:400;text-transform:none">(opcional)</span></label>
-        <input type="tel" id="telefone" placeholder="(11) 99999-9999" />
+        <label>CNPJ</label>
+        <input type="text" id="cnpj" placeholder="00.000.000/0001-00" required />
+      </div>
+      <div class="form-group">
+        <label>Telefone / WhatsApp</label>
+        <input type="tel" id="telefone" placeholder="(11) 99999-9999" required />
       </div>
       <button class="btn-submit" type="submit" id="btnSubmit">Criar minha conta grátis</button>
     </form>
-
     <div class="divider">Já tem conta? <a href="https://app.resulta2f.com.br">Fazer login</a></div>
   </div>
 </main>
-
 <footer>© 2026 2F Business Solutions. Todos os direitos reservados.</footer>
-
 <script>
   const API = 'https://backend-production-dad5.up.railway.app';
-
   document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnSubmit');
@@ -114,14 +97,13 @@
     msg.textContent = '';
     btn.disabled = true;
     btn.textContent = 'Criando conta...';
-
     const body = {
       nomeResponsavel: document.getElementById('nomeResponsavel').value.trim(),
       email:           document.getElementById('email').value.trim(),
       nomeEmpresa:     document.getElementById('nomeEmpresa').value.trim(),
+      cnpj:            document.getElementById('cnpj').value.trim(),
       telefone:        document.getElementById('telefone').value.trim(),
     };
-
     try {
       const res = await fetch(API + '/api/public/cadastro', {
         method: 'POST',
@@ -129,7 +111,6 @@
         body: JSON.stringify(body)
       });
       const data = await res.json();
-
       if (res.ok) {
         msg.className = 'msg success';
         msg.textContent = '✅ Conta criada! Verifique seu e-mail para ativar o acesso.';
