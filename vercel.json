@@ -1,5 +1,0 @@
-﻿{
-  "routes": [
-    { "src": "/cadastro", "dest": "/cadastro.html" }
-  ]
-}
