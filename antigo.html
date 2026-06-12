@@ -44,8 +44,6 @@
     .nav-links { display: flex; gap: 32px; }
     .nav-links a { font-size: 14px; font-weight: 500; color: var(--sub); text-decoration: none; transition: color .2s; }
     .nav-links a:hover { color: var(--blue); }
-    .nav-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-    .nav-btn { padding: 9px 16px; font-size: 13px; }
 
     /* ── HERO ─────────────────────────────────────────────── */
     .hero { padding: 96px 0 80px; background: var(--bg); }
@@ -262,102 +260,6 @@
     .footer-brand .fb-main { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 2px; color: #FFF; }
     .footer-brand .fb-sub  { font-family: 'Orbitron', sans-serif; font-size: 7px; letter-spacing: 3px; color: rgba(255,255,255,.35); margin-top: 4px; }
     .footer-copy { font-size: 13px; color: rgba(255,255,255,.35); }
-
-    /* ══════════════════════════════════════════════════════
-       ── RESPONSIVO / MOBILE ──────────────────────────────
-       ══════════════════════════════════════════════════════ */
-    @media (max-width: 900px) {
-      .nav-links { display: none; }
-    }
-
-    @media (max-width: 768px) {
-      .container { padding: 0 20px; }
-
-      /* NAV */
-      .nav-inner { padding: 0 16px; height: 58px; }
-      .nav-logo .lg-main { font-size: 17px; }
-      .nav-logo .lg-sub  { font-size: 6px; }
-      .nav-actions { gap: 6px; }
-      .nav-btn { padding: 8px 12px; font-size: 12px; }
-
-      /* HERO */
-      .hero { padding: 44px 0 48px; }
-      .hero-eyebrow { margin-bottom: 24px; }
-      .hero h1 { font-size: 36px; line-height: 1.12; letter-spacing: -1px; max-width: 100%; margin-bottom: 18px; }
-      .hero p { font-size: 16px; max-width: 100%; margin-bottom: 30px; }
-      .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; }
-      .hero-actions .btn { text-align: center; width: 100%; padding: 14px 24px; }
-      .hero-note { text-align: center; }
-
-      /* STATS */
-      .stats { padding: 40px 0; }
-      .stats-grid { grid-template-columns: 1fr; gap: 28px; }
-      .stat-item { padding: 0; border-right: none; border-bottom: 1px solid var(--brd-b); padding-bottom: 24px; text-align: center; }
-      .stat-item:last-child { border-bottom: none; padding-bottom: 0; }
-      .stat-val { font-size: 38px; }
-      .stat-lbl { max-width: 100%; margin: 0 auto; }
-
-      /* SECOES BASE */
-      .sec { padding: 52px 0; }
-      .sec.light h2, .sec.dark h2 { font-size: 28px; letter-spacing: -.8px; }
-      .sec.light .sec-sub, .sec.dark .sec-sub { font-size: 15px; max-width: 100%; margin-bottom: 36px; }
-
-      /* PROBLEMA */
-      .pain-grid { grid-template-columns: 1fr; }
-      .pain-card { padding: 32px 24px; }
-      .pain-card h3 { font-size: 17px; }
-
-      /* COMO FUNCIONA */
-      .step { grid-template-columns: 44px 1fr; gap: 18px; padding: 28px 22px; }
-      .step-num { font-size: 26px; }
-      .step h3 { font-size: 17px; }
-      .step p { font-size: 14px; }
-
-      /* MODULOS */
-      .mod-showcase-wrap { grid-template-columns: 1fr; gap: 28px; margin-top: 36px; }
-      .mod-tab { padding: 13px 16px; }
-      .mod-more { margin-top: 16px; }
-
-      /* IMPACTO */
-      .impacto-grid { grid-template-columns: 1fr; }
-      .impacto-card { padding: 32px 24px; }
-      .impacto-card h3 { font-size: 17px; }
-      .impacto-quote { margin-top: 40px; padding-top: 36px; }
-      .impacto-quote blockquote { font-size: 20px; }
-
-      /* ROI */
-      .roi { padding: 56px 0; }
-      .roi-inner { grid-template-columns: 1fr; gap: 40px; }
-      .roi h2 { font-size: 28px; letter-spacing: -.8px; }
-      .roi p { font-size: 15px; }
-      .rn-val { font-size: 40px; }
-      .roi-number-item { padding: 22px 0; }
-
-      /* PLANOS */
-      .planos { padding: 56px 0; }
-      .planos h2 { font-size: 28px; margin-bottom: 36px; }
-      .plan-grid { grid-template-columns: 1fr; gap: 20px; }
-      .plan-card { padding: 32px 24px; }
-      .plan-card.anual { transform: none; }
-      .plan-price { font-size: 42px; }
-
-      /* CTA FINAL */
-      .cta-final { padding: 64px 0; }
-      .cta-final h2 { font-size: 30px; letter-spacing: -1px; }
-      .cta-final p { font-size: 16px; }
-
-      /* FOOTER */
-      .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
-    }
-
-    @media (max-width: 420px) {
-      .hero h1 { font-size: 30px; }
-      .nav-btn { padding: 7px 10px; font-size: 11px; }
-      .nav-actions { gap: 5px; }
-      .stat-val { font-size: 32px; }
-      .plan-price { font-size: 36px; }
-      .cta-final h2 { font-size: 26px; }
-    }
   </style>
 </head>
 <body>
@@ -375,7 +277,7 @@
       <a href="#modulos">Módulos</a>
       <a href="#planos">Planos</a>
     </div>
-    <div class="nav-actions"><a class="btn btn-outline nav-btn" href="https://app.resulta2f.com.br">Acessar</a><a class="btn btn-blue nav-btn" href="/cadastro">Testar grátis</a></div>
+    <a class="btn btn-outline" href="https://app.resulta2f.com.br" style="margin-right:8px">Acessar</a><a class="btn btn-blue" href="/cadastro">Testar grátis</a>
   </div>
 </nav>
 
@@ -403,8 +305,8 @@
   <div class="container">
     <div class="stats-grid">
       <div class="stat-item">
-        <div class="stat-val">100%</div>
-        <div class="stat-lbl">DOS DADOS DIRETO DA NF, SEM DIGITAÇÃO</div>
+        <div class="stat-val">R$ 4k+</div>
+        <div class="stat-lbl">CUSTO DE UM ANALISTA FINANCEIRO POR MÊS</div>
       </div>
       <div class="stat-item">
         <div class="stat-val">40h+</div>
@@ -767,15 +669,15 @@
   <div class="container">
     <div class="roi-inner">
       <div>
-        <span class="eyebrow">MENOS TRABALHO MANUAL</span>
-        <h2>Seu time gasta menos tempo organizando números — e mais tempo decidindo com eles.</h2>
-        <p>Toda semana, planilhas exigem horas só para organizar o que já está nas suas notas fiscais. O Resulta automatiza essa parte — e devolve esse tempo para quem cuida do negócio.</p>
+        <span class="eyebrow">RETORNO SOBRE O INVESTIMENTO</span>
+        <h2>O retorno aparece<br>no primeiro mês.</h2>
+        <p>Um analista financeiro custa R$ 4.000 a R$ 6.000 por mês. O Resulta entrega a mesma visão gerencial por uma fração desse custo.</p>
         <a class="btn btn-blue" href="#planos">Ver os planos</a>
       </div>
       <div class="roi-numbers">
         <div class="roi-number-item">
-          <div class="rn-val">40h+</div>
-          <div class="rn-lbl">HORAS DE PLANILHA ECONOMIZADAS POR MÊS</div>
+          <div class="rn-val">8x</div>
+          <div class="rn-lbl">RETORNO SOBRE O INVESTIMENTO NO 1º MÊS</div>
         </div>
         <div class="roi-number-item">
           <div class="rn-val hl">R$ 397</div>
