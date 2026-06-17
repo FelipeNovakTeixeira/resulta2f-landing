@@ -81,7 +81,14 @@
         <label>Telefone / WhatsApp</label>
         <input type="tel" id="telefone" placeholder="(11) 99999-9999" required />
       </div>
-      <button class="btn-submit" type="submit" id="btnSubmit">Criar minha conta grátis</button>
+              <div class="form-group" style="display:flex;align-items:flex-start;gap:8px;">
+          <input type="checkbox" id="aceiteTermos" style="margin-top:4px;" />
+          <label for="aceiteTermos" style="font-size:13px;line-height:1.4;font-weight:400;">
+            Li e aceito a <a href="https://resulta2f.com.br/politica-de-privacidade" target="_blank" style="color:#F2C744;">Politica de Privacidade</a>
+            e os <a href="https://resulta2f.com.br/termos-de-uso" target="_blank" style="color:#F2C744;">Termos de Uso</a>.
+          </label>
+        </div>
+        <button class="btn-submit" type="submit" id="btnSubmit">Criar minha conta grátis</button>
     </form>
     <div class="divider">Já tem conta? <a href="https://app.resulta2f.com.br">Fazer login</a></div>
   </div>
@@ -97,12 +104,18 @@
     msg.textContent = '';
     btn.disabled = true;
     btn.textContent = 'Criando conta...';
-    const body = {
+    if (!document.getElementById('aceiteTermos').checked) {
+        msg.className = 'msg error';
+        msg.textContent = 'Voce precisa aceitar a Politica de Privacidade e os Termos de Uso.';
+        return;
+      }
+      const body = {
       nomeResponsavel: document.getElementById('nomeResponsavel').value.trim(),
       email:           document.getElementById('email').value.trim(),
       nomeEmpresa:     document.getElementById('nomeEmpresa').value.trim(),
       cnpj:            document.getElementById('cnpj').value.trim(),
       telefone:        document.getElementById('telefone').value.trim(),
+        aceiteTermos:    document.getElementById('aceiteTermos').checked,
     };
     try {
       const res = await fetch(API + '/api/public/cadastro', {
